@@ -1,0 +1,115 @@
+use actix_web::{get, post, web, App, HttpRequest, HttpResponse, HttpServer};
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Serialize, Deserialize)]
+struct DeckGrid {
+    height: i32,
+    width: i32,
+}
+#[derive(Debug, Serialize, Deserialize)]
+struct DeckButton {
+    color: String,
+    keys: Vec<String>,
+    name: String,
+    pos: i32,
+    icon: String,
+}
+#[derive(Debug, Serialize, Deserialize)]
+struct DeckTab {
+    grid: DeckGrid,
+    bg: String,
+    name: String,
+    buttons: Vec<DeckButton>,
+}
+
+#[derive(Debug, Serialize, Deserialize)]
+struct Keys {
+    keys: Vec<String>
+}
+
+#[post("/api/press-keys")]
+async fn press_keys(keys: web::Json<Keys>) -> HttpResponse {
+    HttpResponse::Ok().json(keys)
+}
+
+#[get("/api/tab-by-name/{name}")]
+async fn get_tab_by_name(name: web::Path<String>) -> HttpResponse {
+    // Execute sql query first
+    HttpResponse::Ok().json(DeckTab {
+        grid: DeckGrid {
+            height: 5,
+            width: 5,
+        },
+        bg: "#3399ff".to_string(),
+        name: format!("Tab: {name}"),
+        buttons: vec![],
+    })
+}
+
+#[get("/api/list-decks")]
+async fn list_decks() -> HttpResponse {
+    // Execute sql query first
+    HttpResponse::Ok().json(vec![
+        DeckTab {
+            grid: DeckGrid {
+                height: 5,
+                width: 5,
+            },
+            bg: "#3399ff".to_string(),
+            name: "Tab 1".to_string(),
+            buttons: vec![
+                DeckButton {
+                    color: "#3399ff".to_string(),
+                    keys: vec!["ctrl".to_string(), "c".to_string()],
+                    name: "Copy".to_string(),
+                    pos: 1,
+                    icon: "http://img.url/img.png".to_string(),
+                },
+                DeckButton {
+                    color: "#3399ff".to_string(),
+                    keys: vec!["ctrl".to_string(), "v".to_string()],
+                    name: "Paste".to_string(),
+                    pos: 1,
+                    icon: "http://img.url/img2.png".to_string(),
+                },
+            ],
+        },
+        DeckTab {
+            grid: DeckGrid {
+                height: 5,
+                width: 5,
+            },
+            bg: "#3399ff".to_string(),
+            name: "Tab 2".to_string(),
+            buttons: vec![
+                DeckButton {
+                    color: "#3399ff".to_string(),
+                    keys: vec!["ctrl".to_string(), "c".to_string()],
+                    name: "Copy".to_string(),
+                    pos: 1,
+                    icon: "http://img.url/img.png".to_string(),
+                },
+                DeckButton {
+                    color: "#3399ff".to_string(),
+                    keys: vec!["ctrl".to_string(), "v".to_string()],
+                    name: "Paste".to_string(),
+                    pos: 1,
+                    icon: "http://img.url/img2.png".to_string(),
+                },
+            ],
+        },
+    ])
+}
+
+#[actix_web::main]
+async fn main() -> std::io::Result<()> {
+    HttpServer::new(|| {
+        App::new()
+            .service(list_decks)
+            .service(get_tab_by_name)
+            .service(press_keys)
+    })
+    .bind(("127.0.0.1", 8080))?
+    .run()
+    .await
+}

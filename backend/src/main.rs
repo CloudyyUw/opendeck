@@ -1,6 +1,8 @@
 use actix_web::{get, post, web, App, HttpRequest, HttpResponse, HttpServer};
 use serde::{Deserialize, Serialize};
 
+mod db;
+
 #[derive(Debug, Serialize, Deserialize)]
 struct DeckGrid {
     height: i32,

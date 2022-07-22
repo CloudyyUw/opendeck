@@ -1,8 +1,9 @@
 use actix_web::{get, post, web, App, HttpRequest, HttpResponse, HttpServer};
-use rusqlite::{Connection};
 use serde::{Deserialize, Serialize};
 
 mod objs;
+use objs::{DeckButton, DeckGrid, DeckTab, Keys};
+
 
 #[post("/api/press-keys")]
 async fn press_keys(keys: web::Json<objs::Keys>) -> HttpResponse {
@@ -27,7 +28,7 @@ async fn get_tab_by_name(name: web::Path<String>) -> HttpResponse {
 async fn list_decks() -> HttpResponse {
     // Execute sql query first
     HttpResponse::Ok().json(vec![
-        objs::DeckTab {
+        DeckTab {
             grid: objs::DeckGrid {
                 height: 5,
                 width: 5,
@@ -35,14 +36,14 @@ async fn list_decks() -> HttpResponse {
             bg: "#3399ff".to_string(),
             name: "Tab 1".to_string(),
             buttons: vec![
-                objs::DeckButton {
+                DeckButton {
                     color: "#3399ff".to_string(),
                     keys: vec!["ctrl".to_string(), "c".to_string()],
                     name: "Copy".to_string(),
                     pos: 1,
                     icon: "http://img.url/img.png".to_string(),
                 },
-                objs::DeckButton {
+                DeckButton {
                     color: "#3399ff".to_string(),
                     keys: vec!["ctrl".to_string(), "v".to_string()],
                     name: "Paste".to_string(),
@@ -51,22 +52,22 @@ async fn list_decks() -> HttpResponse {
                 },
             ],
         },
-        objs::DeckTab {
-            grid: objs::DeckGrid {
+        DeckTab {
+            grid: DeckGrid {
                 height: 5,
                 width: 5,
             },
             bg: "#3399ff".to_string(),
             name: "Tab 2".to_string(),
             buttons: vec![
-                objs::DeckButton {
+                DeckButton {
                     color: "#3399ff".to_string(),
                     keys: vec!["ctrl".to_string(), "c".to_string()],
                     name: "Copy".to_string(),
                     pos: 1,
                     icon: "http://img.url/img.png".to_string(),
                 },
-                objs::DeckButton {
+                DeckButton {
                     color: "#3399ff".to_string(),
                     keys: vec!["ctrl".to_string(), "v".to_string()],
                     name: "Paste".to_string(),

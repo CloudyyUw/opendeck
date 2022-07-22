@@ -2,18 +2,19 @@ use actix_web::{get, post, web, App, HttpRequest, HttpResponse, HttpServer};
 use serde::{Deserialize, Serialize};
 
 mod objs;
+mod db;
 use objs::{DeckButton, DeckGrid, DeckTab, Keys};
-
+use db::{Pool};
 
 #[post("/api/press-keys")]
-async fn press_keys(keys: web::Json<objs::Keys>) -> HttpResponse {
+async fn press_keys(keys: web::Json<Keys>) -> HttpResponse {
     HttpResponse::Ok().json(keys)
 }
 
 #[get("/api/tab-by-name/{name}")]
 async fn get_tab_by_name(name: web::Path<String>) -> HttpResponse {
     // Execute sql query first
-    HttpResponse::Ok().json(objs::DeckTab {
+    HttpResponse::Ok().json(DeckTab {
         grid: objs::DeckGrid {
             height: 5,
             width: 5,
@@ -29,7 +30,7 @@ async fn list_decks() -> HttpResponse {
     // Execute sql query first
     HttpResponse::Ok().json(vec![
         DeckTab {
-            grid: objs::DeckGrid {
+            grid: DeckGrid {
                 height: 5,
                 width: 5,
             },

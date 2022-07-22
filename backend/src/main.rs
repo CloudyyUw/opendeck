@@ -1,44 +1,19 @@
 use actix_web::{get, post, web, App, HttpRequest, HttpResponse, HttpServer};
+use rusqlite::{Connection};
 use serde::{Deserialize, Serialize};
 
-
-
-#[derive(Debug, Serialize, Deserialize)]
-struct DeckGrid {
-    height: i32,
-    width: i32,
-}
-#[derive(Debug, Serialize, Deserialize)]
-struct DeckButton {
-    color: String,
-    keys: Vec<String>,
-    name: String,
-    pos: i32,
-    icon: String,
-}
-#[derive(Debug, Serialize, Deserialize)]
-struct DeckTab {
-    grid: DeckGrid,
-    bg: String,
-    name: String,
-    buttons: Vec<DeckButton>,
-}
-
-#[derive(Debug, Serialize, Deserialize)]
-struct Keys {
-    keys: Vec<String>
-}
+mod objs;
 
 #[post("/api/press-keys")]
-async fn press_keys(keys: web::Json<Keys>) -> HttpResponse {
+async fn press_keys(keys: web::Json<objs::Keys>) -> HttpResponse {
     HttpResponse::Ok().json(keys)
 }
 
 #[get("/api/tab-by-name/{name}")]
 async fn get_tab_by_name(name: web::Path<String>) -> HttpResponse {
     // Execute sql query first
-    HttpResponse::Ok().json(DeckTab {
-        grid: DeckGrid {
+    HttpResponse::Ok().json(objs::DeckTab {
+        grid: objs::DeckGrid {
             height: 5,
             width: 5,
         },
@@ -52,22 +27,22 @@ async fn get_tab_by_name(name: web::Path<String>) -> HttpResponse {
 async fn list_decks() -> HttpResponse {
     // Execute sql query first
     HttpResponse::Ok().json(vec![
-        DeckTab {
-            grid: DeckGrid {
+        objs::DeckTab {
+            grid: objs::DeckGrid {
                 height: 5,
                 width: 5,
             },
             bg: "#3399ff".to_string(),
             name: "Tab 1".to_string(),
             buttons: vec![
-                DeckButton {
+                objs::DeckButton {
                     color: "#3399ff".to_string(),
                     keys: vec!["ctrl".to_string(), "c".to_string()],
                     name: "Copy".to_string(),
                     pos: 1,
                     icon: "http://img.url/img.png".to_string(),
                 },
-                DeckButton {
+                objs::DeckButton {
                     color: "#3399ff".to_string(),
                     keys: vec!["ctrl".to_string(), "v".to_string()],
                     name: "Paste".to_string(),
@@ -76,22 +51,22 @@ async fn list_decks() -> HttpResponse {
                 },
             ],
         },
-        DeckTab {
-            grid: DeckGrid {
+        objs::DeckTab {
+            grid: objs::DeckGrid {
                 height: 5,
                 width: 5,
             },
             bg: "#3399ff".to_string(),
             name: "Tab 2".to_string(),
             buttons: vec![
-                DeckButton {
+                objs::DeckButton {
                     color: "#3399ff".to_string(),
                     keys: vec!["ctrl".to_string(), "c".to_string()],
                     name: "Copy".to_string(),
                     pos: 1,
                     icon: "http://img.url/img.png".to_string(),
                 },
-                DeckButton {
+                objs::DeckButton {
                     color: "#3399ff".to_string(),
                     keys: vec!["ctrl".to_string(), "v".to_string()],
                     name: "Paste".to_string(),
